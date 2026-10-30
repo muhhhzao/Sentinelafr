@@ -1,0 +1,13 @@
+{
+  "name": "sentinela-campus-liberdade",
+  "version": "1.0.0",
+  "description": "Sentinela — painel de monitoramento climático em tempo real (Campus Liberdade).",
+  "type": "module",
+  "private": true,
+  "license": "MIT",
+  "engines": { "node": ">=18" },
+  "scripts": {
+    "start": "node scripts/serve.mjs",
+    "test": "node --test"
+  }
+}

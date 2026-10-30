@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#050a0f">
+  <meta name="description" content="Sentinela — painel de monitoramento climático em tempo real com alertas, previsão horária e nível de risco. Projeto do Campus Liberdade.">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self' https://api.open-meteo.com https://geocoding-api.open-meteo.com; base-uri 'self'; form-action 'none'">
+  <title>SENTINELA — Sistema de Monitoramento Climático</title>
+
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=JetBrains+Mono:wght@300;400;600&family=Barlow+Condensed:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="assets/css/base.css">
+  <link rel="stylesheet" href="assets/css/header.css">
+  <link rel="stylesheet" href="assets/css/modal.css">
+  <link rel="stylesheet" href="assets/css/dashboard.css">
+  <link rel="stylesheet" href="assets/css/layout.css">
+
+  <!-- Chart.js 4.6.1 versionado no repositório: o painel funciona sem depender de CDN (ver vendor/) -->
+  <script src="vendor/chart.umd.min.js" defer></script>
+  <script type="module" src="src/js/main.js"></script>
+</head>
+<body>
+
+<header>
+  <div class="logo">
+    <div class="logo-icon">
+      <svg viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <circle cx="18" cy="18" r="16" stroke="#00d4ff" stroke-width="1" opacity="0.4"/>
+        <circle cx="18" cy="18" r="10" stroke="#00d4ff" stroke-width="1" opacity="0.6"/>
+        <circle cx="18" cy="18" r="4" fill="#00d4ff"/>
+        <line x1="18" y1="2"  x2="18" y2="8"  stroke="#00d4ff" stroke-width="1.5"/>
+        <line x1="18" y1="28" x2="18" y2="34" stroke="#00d4ff" stroke-width="1.5"/>
+        <line x1="2"  y1="18" x2="8"  y2="18" stroke="#00d4ff" stroke-width="1.5"/>
+        <line x1="28" y1="18" x2="34" y2="18" stroke="#00d4ff" stroke-width="1.5"/>
+      </svg>
+    </div>
+    <div>
+      <div class="logo-text">SENTINELA</div>
+      <div class="logo-sub">sistema de monitoramento climático</div>
+    </div>
+  </div>
+
+  <div class="header-status">
+    <div class="live-badge" id="liveBadge" data-mode="idle" role="status">
+      <div class="live-dot"></div>
+      <span id="liveText">CONECTANDO</span>
+    </div>
+    <div class="clock" id="clock" aria-label="Horário local">--:--:--</div>
+    <button type="button" class="api-btn" id="refreshBtn" title="Atualizar agora">↻ ATUALIZAR</button>
+    <button type="button" class="api-btn" id="openModalBtn">⚙ LOCALIZAÇÃO</button>
+  </div>
+</header>
+
+<div class="notif-stack" id="notifStack" aria-live="polite" aria-atomic="false"></div>
+
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <button type="button" class="close-modal" id="closeModalBtn" aria-label="Fechar">✕</button>
+    <h2 class="modal-title" id="modalTitle">LOCALIZAÇÃO</h2>
+    <p class="modal-sub">
+      Dados por <strong>Open-Meteo</strong> — API gratuita, sem chave necessária.<br>
+      Busque uma cidade, use sua localização ou informe as coordenadas.
+    </p>
+
+    <div class="api-sources">
+      <strong>Previsão:</strong> api.open-meteo.com — temperatura, vento, chuva, rajadas, pressão, umidade e histórico de 24 h<br>
+      <strong>Geocodificação:</strong> geocoding-api.open-meteo.com — busca de cidades
+    </div>
+
+    <div class="form-group">
+      <label class="form-label" for="citySearch">Buscar cidade</label>
+      <div class="search-row">
+        <input type="text" class="form-input" id="citySearch" placeholder="Ex: São Paulo, Recife, Manaus..." autocomplete="off">
+        <button type="button" class="search-btn" id="modalSearchBtn">BUSCAR</button>
+        <button type="button" class="search-btn" id="geoBtn" title="Usar a localização deste dispositivo">📍 USAR MINHA</button>
+      </div>
+      <ul class="suggestions" id="modalResults" hidden></ul>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label" for="latInput">Latitude</label>
+        <input type="text" class="form-input" id="latInput" placeholder="-23.5505" inputmode="decimal">
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="lonInput">Longitude</label>
+        <input type="text" class="form-input" id="lonInput" placeholder="-46.6333" inputmode="decimal">
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label" for="cityInput">Nome da região</label>
+      <input type="text" class="form-input" id="cityInput" placeholder="São Paulo, SP">
+    </div>
+
+    <button type="button" class="btn-primary" id="startBtn">INICIAR MONITORAMENTO</button>
+    <button type="button" class="btn-demo" id="demoBtn">USAR DADOS DE DEMONSTRAÇÃO</button>
+  </div>
+</div>
+
+<main>
+
+  <div class="alert-banner" id="alertBanner" role="alert">
+    <span class="alert-icon" aria-hidden="true">⚠</span>
+    <div class="alert-text" id="alertText">ALERTA METEOROLÓGICO ATIVO</div>
+    <div class="alert-level" id="alertLevelBadge">NÍVEL 2</div>
+  </div>
+
+  <div class="search-bar">
+    <div class="search-field">
+      <input type="text" class="search-input" id="searchCity" placeholder="Buscar cidade ou região..." aria-label="Buscar cidade ou região" autocomplete="off">
+      <ul class="suggestions" id="topResults" hidden></ul>
+    </div>
+    <button type="button" class="search-btn" id="topSearchBtn">BUSCAR</button>
+  </div>
+
+  <div class="dashboard-grid">
+
+    <section class="panel status-panel" aria-label="Condição atual">
+      <div class="panel-title">CONDIÇÃO ATUAL</div>
+      <div class="loading-overlay" id="statusLoading"><div class="loader"></div></div>
+
+      <div class="condition-main">
+        <span class="condition-icon-large" id="condIcon">🌤</span>
+        <div class="condition-name" id="condName">AGUARDANDO</div>
+        <div class="condition-desc" id="condDesc">Carregando dados...</div>
+      </div>
+
+      <div class="metric-item"><span class="metric-label">TEMPERATURA</span><span class="metric-value" id="tempVal">--°C</span></div>
+      <div class="metric-item"><span class="metric-label">SENSAÇÃO</span><span class="metric-value" id="feelsVal">--°C</span></div>
+      <div class="metric-item"><span class="metric-label">UMIDADE</span><span class="metric-value" id="humVal">--%</span></div>
+      <div class="metric-item"><span class="metric-label">VENTO</span><span class="metric-value" id="windVal">-- km/h</span></div>
+      <div class="metric-item"><span class="metric-label">RAJADA</span><span class="metric-value" id="gustVal">-- km/h</span></div>
+      <div class="metric-item"><span class="metric-label">CHUVA</span><span class="metric-value" id="rainVal">-- mm</span></div>
+      <div class="metric-item"><span class="metric-label">PRESSÃO</span><span class="metric-value" id="pressVal">-- hPa</span></div>
+      <div class="metric-item"><span class="metric-label">VISIB.</span><span class="metric-value" id="visVal">-- km</span></div>
+      <div class="metric-item"><span class="metric-label">REGIÃO</span><span class="metric-value metric-value-sm" id="regionVal">--</span></div>
+
+      <div class="compass-block">
+        <div class="panel-title">DIREÇÃO DO VENTO</div>
+        <div class="wind-compass">
+          <div class="compass" id="compass">
+            <div class="compass-labels">
+              <span class="cl cl-n">N</span>
+              <span class="cl cl-s">S</span>
+              <span class="cl cl-o">O</span>
+              <span class="cl cl-l">L</span>
+            </div>
+            <div class="compass-arrow" id="compassArrow"></div>
+          </div>
+        </div>
+        <div class="compass-caption" id="windDirLabel">---</div>
+      </div>
+
+      <div class="data-source" id="dataSource">FONTE: --</div>
+    </section>
+
+    <section class="panel map-panel" aria-label="Radar meteorológico">
+      <div class="panel-title">RADAR METEOROLÓGICO</div>
+
+      <div class="tabs" role="tablist" aria-label="Camadas do radar">
+        <button type="button" class="tab active" role="tab" aria-selected="true"  data-tab="radar">RADAR</button>
+        <button type="button" class="tab"        role="tab" aria-selected="false" data-tab="precipitacao">PRECIPITAÇÃO</button>
+        <button type="button" class="tab"        role="tab" aria-selected="false" data-tab="vento">VENTO</button>
+        <button type="button" class="tab"        role="tab" aria-selected="false" data-tab="temperatura">TEMPERATURA</button>
+      </div>
+
+      <div class="map-container">
+        <canvas id="radarCanvas" role="img" aria-label="Visualização ilustrativa gerada a partir das condições atuais"></canvas>
+        <div class="map-overlay">
+          <div class="map-tag" id="radarTitle">AGUARDANDO DADOS</div>
+          <div class="map-tag" id="radarTime">ATUALIZADO: --:--</div>
+          <div class="map-tag map-tag-note">VISUALIZAÇÃO ILUSTRATIVA — NÃO É RADAR REAL</div>
+        </div>
+        <div class="map-legend">
+          <div class="legend-item"><div class="legend-dot dot-ok"></div>FRACO</div>
+          <div class="legend-item"><div class="legend-dot dot-warn"></div>MODERADO</div>
+          <div class="legend-item"><div class="legend-dot dot-orange"></div>FORTE</div>
+          <div class="legend-item"><div class="legend-dot dot-danger"></div>EXTREMO</div>
+        </div>
+      </div>
+
+      <div class="risk-block">
+        <div class="panel-title">NÍVEL DE RISCO GERAL</div>
+        <div class="risk-display" id="riskDisplay" data-level="low">
+          <div class="risk-value" id="riskValue">0</div>
+          <div class="risk-info">
+            <div class="risk-label" id="riskLabel">BAIXO RISCO</div>
+            <div class="risk-bar"><div class="risk-bar-fill" id="riskBarFill"></div></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel alerts-panel" aria-label="Alertas">
+      <div class="panel-title">ALERTAS ATIVOS</div>
+      <div id="alertsContainer" aria-live="polite">
+        <div class="placeholder">Aguardando dados...</div>
+      </div>
+
+      <div class="history-block">
+        <div class="panel-title">HISTÓRICO 24H</div>
+        <div class="history-list" id="historyContainer">-- Sem dados disponíveis</div>
+      </div>
+    </section>
+
+    <section class="forecast-panel" aria-label="Previsão horária">
+      <div class="panel-title">PREVISÃO HORÁRIA — PRÓXIMAS 24H</div>
+      <div class="forecast-scroll" id="forecastStrip">
+        <div class="placeholder placeholder-left">Carregue dados para ver a previsão horária</div>
+      </div>
+    </section>
+
+    <div class="charts-row">
+
+      <section class="chart-panel" aria-label="Precipitação">
+        <div class="panel-title">PRECIPITAÇÃO</div>
+        <div class="chart-value-big" id="precipBig">0.0</div>
+        <div class="chart-unit">mm (agora)</div>
+        <div class="chart-trend" id="precipTrend">— sem dados</div>
+        <div class="mini-chart"><canvas id="precipChart" role="img" aria-label="Precipitação prevista nas próximas 24 horas"></canvas></div>
+      </section>
+
+      <section class="chart-panel" aria-label="Velocidade do vento">
+        <div class="panel-title">VELOCIDADE DO VENTO</div>
+        <div class="chart-value-big value-wind" id="windBig">0</div>
+        <div class="chart-unit">km/h</div>
+        <div class="chart-trend" id="windTrend">— sem dados</div>
+        <div class="mini-chart"><canvas id="windChart" role="img" aria-label="Velocidade do vento prevista nas próximas 24 horas"></canvas></div>
+      </section>
+
+      <section class="chart-panel" aria-label="Temperatura">
+        <div class="panel-title">TEMPERATURA</div>
+        <div class="chart-value-big value-temp" id="tempBig">--</div>
+        <div class="chart-unit">°C</div>
+        <div class="chart-trend" id="tempTrend">— sem dados</div>
+        <div class="mini-chart"><canvas id="tempChart" role="img" aria-label="Temperatura prevista nas próximas 24 horas"></canvas></div>
+      </section>
+
+    </div>
+
+  </div>
+</main>
+
+<footer>
+  SENTINELA — SISTEMA DE MONITORAMENTO CLIMÁTICO · DADOS:
+  <a href="https://open-meteo.com/" target="_blank" rel="noopener noreferrer">OPEN-METEO.COM</a> (CC BY 4.0)
+</footer>
+
+</body>
+</html>
