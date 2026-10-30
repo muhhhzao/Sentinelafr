@@ -1,14 +1,14 @@
-# 🛰️ SENTINELA — Sistema de Monitoramento Climático
+# SENTINELA — Sistema de Monitoramento Climático
 
 Painel web de monitoramento climático em tempo real para qualquer cidade: condições atuais, alertas automáticos, nível de risco, previsão das próximas 24 h e histórico das últimas 24 h.
 
 Projeto do **Campus Liberdade** · Sprint final
 
-> **Demo:** `https://SEU-USUARIO.github.io/sentinela-campus-liberdade/` *(troque após publicar)*
+https://github.com/muhhhzao/Sentinelafr.git
 
 ![Dashboard](docs/img/dashboard.png)
 
-## ✨ Funcionalidades
+##Funcionalidades
 
 | Recurso | Descrição |
 |---|---|
@@ -22,14 +22,14 @@ Projeto do **Campus Liberdade** · Sprint final
 | **Modo demonstração** | Cenário de pancadas com rajadas fortes, funciona sem internet |
 | **Visualização ilustrativa** | Abas Radar / Precipitação / Vento / Temperatura desenhadas a partir dos dados atuais (**não é radar real**, e a tela avisa isso) |
 
-## 🧰 Tecnologias
+## Tecnologias
 
 - HTML5, CSS3 e JavaScript (módulos ES) — **sem framework e sem build**
 - [Open-Meteo](https://open-meteo.com/) — previsão e geocodificação (gratuita, sem chave)
 - [Chart.js 4.6.1](https://www.chartjs.org/) — versionado em `vendor/`, funciona sem CDN
 - Node.js ≥ 18 apenas para testes e servidor local (**zero dependências**)
 
-## 🚀 Como rodar
+## Como rodar
 
 O projeto usa módulos ES, então precisa ser servido por HTTP (abrir o `index.html` com duplo clique **não** funciona).
 
@@ -70,31 +70,31 @@ npm test             # 37 testes automatizados (lógica + camada de API)
 
 Detalhes e decisões em [`docs/ARQUITETURA.md`](docs/ARQUITETURA.md).
 
-## 🌐 Publicar no GitHub Pages
+##Publicar no GitHub Pages
 
 1. Crie o repositório e envie o código (`git push` na branch `main`).
 2. Em **Settings → Pages → Build and deployment → Source**, escolha **GitHub Actions**.
 3. O workflow `.github/workflows/pages.yml` roda os testes e publica sozinho a cada push.
 
-## ⚠️ Limitações conhecidas
+##Limitações conhecidas
 
 - O "radar" é uma **visualização ilustrativa**; não usa imagens de radar real.
 - Alertas são calculados a partir da previsão da Open-Meteo e **não substituem** os avisos oficiais da Defesa Civil/INMET. Integrar fontes oficiais é um próximo passo.
 - A Open-Meteo gratuita é para uso não comercial e exige atribuição (já presente no rodapé).
 
-## 🔭 Próximos passos
+##Próximos passos
 
 - Integração com avisos oficiais (INMET / Defesa Civil)
 - Radar real (ex.: camada de mapa com Leaflet)
 - Favoritos de cidades e comparação entre locais
 - Instalação como PWA com notificações
 
-## 👥 Equipe
+##Equipe
 
 | Nome | Papel |
 |---|---|
 | *(preencher)* | |
 
-## 📄 Licença
+##Licença
 
 [MIT](LICENSE). Dados meteorológicos: [Open-Meteo.com](https://open-meteo.com/) (CC BY 4.0).
