@@ -44,24 +44,24 @@ npm test
 ##  Estrutura
 
 ```
-├── index.html             
+├── index.html
 ├── assets/
 │   ├── css/
 │   └── favicon.svg
 ├── src/js/
-│   ├── main.js         
-│   ├── config.js        
-│   ├── state.js          
-│   ├── api/             
-│   ├── core/           
-│   ├── services/          
-│   ├── data/demo.js       
-│   └── ui/             
-├── tests/                 
-├── vendor/                 
-├── scripts/serve.mjs      
-├── docs/                  
-└── .github/workflows/    
+│   ├── main.js
+│   ├── config.js
+│   ├── state.js
+│   ├── api/
+│   ├── core/
+│   ├── services/
+│   ├── data/demo.js
+│   └── ui/
+├── tests/
+├── vendor/
+├── scripts/serve.mjs
+├── docs/
+└── .github/workflows/
 ```
 
 Detalhes e decisões em [`docs/ARQUITETURA.md`](docs/ARQUITETURA.md).
