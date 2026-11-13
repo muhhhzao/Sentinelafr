@@ -68,13 +68,13 @@ Detalhes e decisões em [`docs/ARQUITETURA.md`](docs/ARQUITETURA.md).
 
 ##Equipe
 
-Murillo Mello Rodrigues |
+| Murillo Mello Rodrigues |
 
-Diego Ramos  |
+| Diego Ramos  |
 
-Giulia Rodrigues Daniel  |
+| Giulia Rodrigues Daniel  |
 
-João Bovolon Shimada |
+| João Bovolon Shimada |
 
-Kethelyn Carolyne  |
+| Kethelyn Carolyne  |
 
