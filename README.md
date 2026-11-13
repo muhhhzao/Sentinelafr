@@ -68,9 +68,13 @@ Detalhes e decisões em [`docs/ARQUITETURA.md`](docs/ARQUITETURA.md).
 
 ##Equipe
 
-| Nome | Papel |
 Murillo Mello Rodrigues |
+
 Diego Ramos  |
+
 Giulia Rodrigues Daniel  |
+
 João Bovolon Shimada |
+
 Kethelyn Carolyne  |
+
