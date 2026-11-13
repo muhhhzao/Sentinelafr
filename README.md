@@ -32,36 +32,36 @@ O projeto usa módulos ES, então precisa ser servido por HTTP (abrir o `index.h
 ```bash
 git clone https://github.com/muhhhzao/sentinelafr.git
 cd sentinelafr
-npm start            # abre em http://localhost:5173
+npm start           
 ```
 
 Sem Node? Qualquer servidor estático serve: `python3 -m http.server 5173` ou a extensão *Live Server* do VS Code.
 
 ```bash
-npm test             # 37 testes automatizados (lógica + camada de API)
+npm test          
 ```
 
 ##  Estrutura
 
 ```
-├── index.html              # página única
+├── index.html             
 ├── assets/
-│   ├── css/                # base · header · modal · dashboard · layout
+│   ├── css/
 │   └── favicon.svg
 ├── src/js/
-│   ├── main.js             # ponto de entrada (só liga os módulos)
-│   ├── config.js           # constantes e limiares de alerta
-│   ├── state.js            # estado global com publish/subscribe
-│   ├── api/                # http (timeout/retry) · openMeteo · geocoding
-│   ├── core/               # regras puras, sem DOM: risco, alertas, histórico, vento, WMO...
-│   ├── services/           # monitor (atualização/cache/fallback) · storage
-│   ├── data/demo.js        # dados de demonstração
-│   └── ui/                 # um módulo por painel + radar em canvas
-├── tests/                  # node:test
-├── vendor/                 # Chart.js
-├── scripts/serve.mjs       # servidor local sem dependências
-├── docs/                   # arquitetura, sprint final, roteiro de apresentação
-└── .github/workflows/      # testes + deploy automático no GitHub Pages
+│   ├── main.js         
+│   ├── config.js        
+│   ├── state.js          
+│   ├── api/             
+│   ├── core/           
+│   ├── services/          
+│   ├── data/demo.js       
+│   └── ui/             
+├── tests/                 
+├── vendor/                 
+├── scripts/serve.mjs      
+├── docs/                  
+└── .github/workflows/    
 ```
 
 Detalhes e decisões em [`docs/ARQUITETURA.md`](docs/ARQUITETURA.md).
