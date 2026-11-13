@@ -7,12 +7,10 @@ import { attachLocationSearch } from './ui/locationSearch.js';
 import { initRadar, setRadarTab } from './ui/radar.js';
 import { renderWeather } from './ui/render.js';
 
-/** Ponto de entrada: liga os módulos entre si. Nenhuma regra de negócio mora aqui. */
 function init() {
   startClock();
   initRadar(byId('radarCanvas'));
 
-  // Reage a qualquer mudança de estado (o serviço `monitor` é quem altera).
   subscribe((s, patch) => {
     if ('mode' in patch) renderMode(s.mode);
     if ('loading' in patch) renderLoading(s.loading);
@@ -20,7 +18,6 @@ function init() {
   });
 
   initModal({
-    // Em modo demo o formulário volta para o último local real, não para "DEMONSTRAÇÃO — ...".
     getDefaults: () => (state.mode === 'demo' ? getSavedLocation() : state.location),
     onSubmit: (location) => startMonitoring(location),
     onDemo: () => loadDemo(),
@@ -50,7 +47,6 @@ function init() {
 
   byId('refreshBtn').addEventListener('click', () => refresh());
 
-  // Abre direto no último local usado (ou São Paulo). Sem modal obrigatório na entrada.
   startMonitoring(getSavedLocation(), { initial: true, silent: true });
 }
 
