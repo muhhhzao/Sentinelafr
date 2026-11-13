@@ -31,7 +31,7 @@ O projeto usa módulos ES, então precisa ser servido por HTTP (abrir o `index.h
 
 ```bash
 git clone https://github.com/muhhhzao/sentinelafr.git
-cd sentinela-campus-liberdade
+cd sentinelafr
 npm start            # abre em http://localhost:5173
 ```
 
