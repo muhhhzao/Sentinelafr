@@ -34,7 +34,7 @@ https://github.com/muhhhzao/Sentinelafr.git
 O projeto usa módulos ES, então precisa ser servido por HTTP (abrir o `index.html` com duplo clique **não** funciona).
 
 ```bash
-git clone https://github.com/SEU-USUARIO/sentinela-campus-liberdade.git
+git clone https://github.com/muhhhzao/sentinela-campus-liberdade.git
 cd sentinela-campus-liberdade
 npm start            # abre em http://localhost:5173
 ```
