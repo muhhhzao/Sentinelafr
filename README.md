@@ -45,7 +45,7 @@ Sem Node? Qualquer servidor estático serve: `python3 -m http.server 5173` ou a 
 npm test             # 37 testes automatizados (lógica + camada de API)
 ```
 
-## 🗂️ Estrutura
+##  Estrutura
 
 ```
 ├── index.html              # página única
@@ -92,9 +92,11 @@ Detalhes e decisões em [`docs/ARQUITETURA.md`](docs/ARQUITETURA.md).
 ##Equipe
 
 | Nome | Papel |
-|---|---|
-| *(preencher)* | |
-
+Murillo Mello Rodrigues 
+Diego Ramos
+Giulia Rodrigues Daniel
+João Bovolon Shimada 
+Kethelyn Carolyne
 ##Licença
 
 [MIT](LICENSE). Dados meteorológicos: [Open-Meteo.com](https://open-meteo.com/) (CC BY 4.0).
